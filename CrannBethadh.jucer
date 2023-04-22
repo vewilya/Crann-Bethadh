@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="NMDw7f" name="CrannBethadh" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              version="0.0.1" companyName="Bear Sound Productions">
+  <MAINGROUP id="J1KNpu" name="CrannBethadh">
+    <GROUP id="{D181D592-84FE-8BCC-911C-E07FB9172444}" name="Source">
+      <GROUP id="{6D61AF2A-51FF-2F38-A9D8-FE8C92A94B22}" name="UI">
+        <FILE id="nJtZg9" name="ColourMenu.cpp" compile="1" resource="0" file="Source/ColourMenu.cpp"/>
+        <FILE id="Pn7kXm" name="ColourMenu.h" compile="0" resource="0" file="Source/ColourMenu.h"/>
+        <FILE id="cygYNF" name="MenuStyleSheet.cpp" compile="1" resource="0"
+              file="Source/MenuStyleSheet.cpp"/>
+        <FILE id="KLVBoF" name="MenuStyleSheet.h" compile="0" resource="0"
+              file="Source/MenuStyleSheet.h"/>
+        <FILE id="r4EhA7" name="RotaryKnobStyleSheet.cpp" compile="1" resource="0"
+              file="Source/RotaryKnobStyleSheet.cpp"/>
+        <FILE id="xaGYLo" name="RotaryKnobStyleSheet.h" compile="0" resource="0"
+              file="Source/RotaryKnobStyleSheet.h"/>
+        <FILE id="snUIZC" name="Title.cpp" compile="1" resource="0" file="Source/Title.cpp"/>
+        <FILE id="F6qhwH" name="Title.h" compile="0" resource="0" file="Source/Title.h"/>
+      </GROUP>
+      <FILE id="vXWGdq" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="XgDC9Z" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="GSjGwJ" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="WWfgHy" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+    </GROUP>
+    <GROUP id="{C28D71F5-0938-B371-614B-A73782A20887}" name="Ressources">
+      <GROUP id="{53665A29-282B-4397-F8FD-3CA7AAC1EEA1}" name="IRs">
+        <GROUP id="{A2CD7146-A0E2-4C0D-50EB-A792D4652D00}" name="Atmosphere">
+          <FILE id="z4WAAk" name="UB_UB_ACM__RYMDIGARE_01.wav" compile="0" resource="1"
+                file="../../BearSound/Atmosphere/UB_UB_ACM__RYMDIGARE_01.wav"/>
+          <FILE id="QzTMCI" name="UB_UB_ACM__RYMDIGARE_05.wav" compile="0" resource="1"
+                file="../../BearSound/Atmosphere/UB_UB_ACM__RYMDIGARE_05.wav"/>
+          <FILE id="pzWs1z" name="UB_UB_ACM__RYMDIGARE_06.wav" compile="0" resource="1"
+                file="../../BearSound/Atmosphere/UB_UB_ACM__RYMDIGARE_06.wav"/>
+          <FILE id="EOzXk1" name="UB_UB_ACM__RYMDIGARE_07.wav" compile="0" resource="1"
+                file="../../BearSound/Atmosphere/UB_UB_ACM__RYMDIGARE_07.wav"/>
+        </GROUP>
+        <GROUP id="{26D43B4A-A738-1FB9-A310-BAC40BEB71A6}" name="Noise">
+          <FILE id="li29aj" name="UB_UB_ACM__RYMDIGARE_02.wav" compile="0" resource="1"
+                file="../../BearSound/Noise/UB_UB_ACM__RYMDIGARE_02.wav"/>
+          <FILE id="J0vY6X" name="UB_UB_ACM__RYMDIGARE_04.wav" compile="0" resource="1"
+                file="../../BearSound/Noise/UB_UB_ACM__RYMDIGARE_04.wav"/>
+          <FILE id="EKdd2u" name="UB_UB_ACM__RYMDIGARE_08.wav" compile="0" resource="1"
+                file="../../BearSound/Noise/UB_UB_ACM__RYMDIGARE_08.wav"/>
+          <FILE id="Oprzhf" name="UB_UB_ACM__RYMDIGARE_09.wav" compile="0" resource="1"
+                file="../../BearSound/Noise/UB_UB_ACM__RYMDIGARE_09.wav"/>
+        </GROUP>
+      </GROUP>
+      <FILE id="H562Ow" name="title.png" compile="0" resource="1" file="../../../Downloads/title.png"/>
+      <FILE id="dUom5y" name="Mask.png" compile="0" resource="1" file="../../../Downloads/Mask.png"/>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Crann Bethadh"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="Crann Bethadh"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../../Applications/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../../Applications/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+</JUCERPROJECT>
