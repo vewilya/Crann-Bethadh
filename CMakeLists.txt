@@ -65,9 +65,9 @@ target_compile_definitions(${TARGET_NAME}
 
 
 juce_add_binary_data(Images SOURCES
- Ressources/CrannBethadh.png
- Ressources/Mask.png
- Ressources/title.png
+ Resources/CrannBethadh.png
+ Resources/Mask.png
+ Resources/title.png
 )
 
 set(JUCE_DEPENDENCIES
