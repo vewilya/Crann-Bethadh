@@ -41,6 +41,9 @@ void Title::paint (juce::Graphics& g)
 void Title::resized()
 {
     // BG Image
-    mImageComponent.setBoundsRelative(-.085f, 0.09f, .5f, 0.15f);
+  auto w = getWidth();
+  auto h = getHeight();
+
+  mImageComponent.setBounds(0.0f, h * .1, w, h * 0.3f);
 }
 }

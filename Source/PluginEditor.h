@@ -37,6 +37,8 @@ private:
     
     // Set up Main Knob
     BigKnob myKnob;
+
+    // Colour Menu
     ub_ui::ColourMenu colourMenu;
     
     // Slider Attachments

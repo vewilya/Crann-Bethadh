@@ -1,4 +1,6 @@
-Ressources
+Resources
 .DS_Store
 Builds/
+build/
+libs/
 JuceLibraryCode/
