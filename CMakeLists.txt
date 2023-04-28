@@ -29,13 +29,13 @@ CPMAddPackage(
 set(TARGET_NAME CrannBethadhPlugin)
 
 juce_add_plugin(${TARGET_NAME}
-    COMPANY_NAME BearSound
+    COMPANY_NAME BearSoundProductions
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
     PLUGIN_MANUFACTURER_CODE BRSD
     PLUGIN_CODE CRBH
-    FORMATS VST3
+    FORMATS AU VST3
     PRODUCT_NAME "Crann Bethadh"
 )
 
@@ -74,6 +74,7 @@ set(JUCE_DEPENDENCIES
     juce::juce_audio_utils
     juce::juce_dsp
 )
+
 target_link_libraries(${TARGET_NAME}
     PRIVATE
         ${JUCE_DEPENDENCIES}

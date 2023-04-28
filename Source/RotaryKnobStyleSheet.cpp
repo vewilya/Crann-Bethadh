@@ -39,7 +39,7 @@ void CustomLAF::drawRotarySlider (juce::Graphics& g, int x, int y, int width, in
     auto arcRadius = radius - lineW * 0.9f;
     
     // Background Checker
-//    g.fillAll(juce::Colours::orange);
+   g.fillAll(juce::Colours::orange);
 //        juce::Rectangle<float> bgRect (0.0f, 0.0f, bounds.getWidth(), bounds.getHeight());
 //        g.setColour(juce::Colours::black);
 //        g.fillRect(bgRect);

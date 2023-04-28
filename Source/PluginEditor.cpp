@@ -20,7 +20,7 @@ ProcessBLockAudioProcessorEditor::ProcessBLockAudioProcessorEditor (CrannBethadh
     setSize (500, 500);
     setResizable(true, true);
     getConstrainer()->setFixedAspectRatio(1.0);
-    setResizeLimits(250, 250, 750, 750);
+    setResizeLimits(400, 400, 750, 750);
     
     // IR Loader
     addAndMakeVisible(colourMenu);
@@ -38,7 +38,8 @@ ProcessBLockAudioProcessorEditor::ProcessBLockAudioProcessorEditor (CrannBethadh
     colourMenu.onChange = [this] { colourMenuChanged(); };
         
     addAndMakeVisible(myKnob);
-    myKnob.setSize(350, 350);
+    myKnob.setSize(getWidth() * .4, getWidth() * .4
+                   );
     
     mixSliderAttach =
         std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
@@ -94,7 +95,7 @@ void ProcessBLockAudioProcessorEditor::resized()
     colourMenu.setBounds(w * .35, 20, w * .3, 30);
     
     // LAF Slider
-    myKnob.setBounds(w * .2, h * .3, w, h);
+    myKnob.setBounds(w * .3, h * .4, w*.4, h*.4);
     
 }
 
@@ -120,7 +121,7 @@ void  ProcessBLockAudioProcessorEditor::colourMenuChanged() {
             if (stream.openedOk())
             {
                 audioProcessor.getSavedFile() = result;
-//                audioProcessor.root = result.getParentDirectory().getFullPathName();
+                // audioProcessor.getRoot() = result.getParentDirectory().getFullPathName();
                 audioProcessor.getIrLoader().reset();
                 audioProcessor.getIrLoader().loadImpulseResponse(result, juce::dsp::Convolution::Stereo::yes, juce::dsp::Convolution::Trim::yes, 0); // 0 to initialise the size of the loaded file dynamically!
             }
