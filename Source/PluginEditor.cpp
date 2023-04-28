@@ -44,6 +44,7 @@ ProcessBLockAudioProcessorEditor::ProcessBLockAudioProcessorEditor (CrannBethadh
     mixSliderAttach =
         std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
             audioProcessor.getTreeState(), MIX_PARAMETER, myKnob);
+
 }
 
 ProcessBLockAudioProcessorEditor::~ProcessBLockAudioProcessorEditor()
@@ -96,6 +97,7 @@ void ProcessBLockAudioProcessorEditor::resized()
     
     // LAF Slider
     myKnob.setBounds(w * .3, h * .4, w*.4, h*.4);
+    myKnob.repaint();
     
 }
 

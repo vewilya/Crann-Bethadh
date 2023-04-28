@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
-project(CrannBethadh VERSION 0.0.1)
+project(CrannBethadh VERSION 0.0.12)
 
 set(CMAKE_CXX_STANDARD 23)
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs")
@@ -33,9 +33,10 @@ juce_add_plugin(${TARGET_NAME}
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
+    COPY_PLUGIN_AFTER_BUILD TRUE
     PLUGIN_MANUFACTURER_CODE BRSD
     PLUGIN_CODE CRBH
-    FORMATS AU VST3
+    FORMATS AU VST3 Standalone
     PRODUCT_NAME "Crann Bethadh"
 )
 
@@ -84,4 +85,3 @@ target_link_libraries(${TARGET_NAME}
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
 )
-

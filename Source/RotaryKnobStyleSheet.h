@@ -15,9 +15,9 @@ class CustomLAF : public juce::LookAndFeel_V4
 {
 public:
     CustomLAF();
-    juce::Slider::SliderLayout getSliderLayout (juce::Slider& slider) override;
-    
-    void drawRotarySlider (juce::Graphics &, int x, int y, int width, int height, float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, juce::Slider &slider) override;
+    // juce::Slider::SliderLayout getSliderLayout (juce::Slider& slider) override;
+
+    void drawRotarySlider (juce::Graphics &, int x, int y, int width, int height, float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, juce::Slider &slider) override;  
     
 };
 
@@ -34,16 +34,15 @@ public:
         setRotaryParameters (rotaryParameters);
         setColour (juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colours::orange);
         setSliderStyle (juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
-    }
+        setTextBoxStyle (juce::Slider::NoTextBox, true, 0, 0);
+;    }
     
     ~BigKnob()
     {
         setLookAndFeel(nullptr);
     }
 public:
-    void setKnobSize (float width, float height);
-    float knobWidth { 200.0f };
-    float knobHeight { 200.0f };
+
    
 private:
     CustomLAF myLAF;
