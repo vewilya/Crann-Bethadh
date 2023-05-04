@@ -27,6 +27,7 @@ CPMAddPackage(
 )
 
 set(TARGET_NAME CrannBethadhPlugin)
+set(JUCE_FORMATS AU VST3 Standalone)
 
 juce_add_plugin(${TARGET_NAME}
     COMPANY_NAME BearSoundProductions
@@ -36,7 +37,10 @@ juce_add_plugin(${TARGET_NAME}
     COPY_PLUGIN_AFTER_BUILD TRUE
     PLUGIN_MANUFACTURER_CODE BRSD
     PLUGIN_CODE CRBH
-    FORMATS AU VST3 Standalone
+    # LV2_URI https://github.com/vewilya/Crann-Bethadh
+    # LV2_SHARED_LIBRARY_NAME Crann_Bethadh                                  
+    FORMATS ${JUCE_FORMATS} 
+
     PRODUCT_NAME "Crann Bethadh"
 )
 

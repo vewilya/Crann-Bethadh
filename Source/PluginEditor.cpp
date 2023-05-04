@@ -93,10 +93,10 @@ void ProcessBLockAudioProcessorEditor::resized()
     title.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
     
     // IR
-    colourMenu.setBounds(w * .35, 20, w * .3, 30);
+    colourMenu.setBounds(w * .35f, 20.0f, w * .3f, 30.0f);
     
     // LAF Slider
-    myKnob.setBounds(w * .3, h * .4, w*.4, h*.4);
+    myKnob.setBounds(w * .3f, h * .4f, w *.4f, h*.4f);
     myKnob.repaint();
     
 }

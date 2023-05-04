@@ -1,5 +1,6 @@
-Resources
 .DS_Store
+.vscode/
+Resources/
 Builds/
 build/
 libs/

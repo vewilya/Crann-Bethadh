@@ -39,7 +39,7 @@ private:
     BigKnob myKnob;
 
     // Colour Menu
-    ub_ui::ColourMenu colourMenu;
+    ub::ColourMenu colourMenu;
     
     // Slider Attachments
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixSliderAttach;

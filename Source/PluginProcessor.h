@@ -9,6 +9,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Saturator.h"
+#include <array>
 
 constexpr auto MIX_PARAMETER = "mix";
 
@@ -92,7 +94,7 @@ private:
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged (const juce::String& parameterID, float newValue) override;
     
-    void applySaturation(juce::dsp::AudioBlock<float>& inputBlock);
+    // void applySaturation(juce::dsp::AudioBlock<float>& inputBlock);
     
     float softClipper(float samples);
     float hardClipper(float samples);
@@ -103,6 +105,8 @@ private:
     juce::dsp::Gain<float> dryGain;
     
     juce::dsp::Oversampling<float> oversampling;
+
+    std::array<ub::Saturator, 2> channelSaturators;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrannBethadhAudioProcessor)
 };

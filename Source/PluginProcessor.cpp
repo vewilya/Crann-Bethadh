@@ -126,7 +126,7 @@ void CrannBethadhAudioProcessor::prepareToPlay (double sampleRate, int samplesPe
     // Oversampling
     oversampling.initProcessing(samplesPerBlock);
     
-    // Passing that to the dry buffer copy
+    // Dry buffer copy
     dryBuffer.setSize(spec.numChannels, spec.maximumBlockSize);
     
     convoGain.reset();
@@ -138,7 +138,10 @@ void CrannBethadhAudioProcessor::prepareToPlay (double sampleRate, int samplesPe
     irLoader.reset();
     irLoader.prepare(spec);
     
-    
+    for (auto& sat : channelSaturators)
+    {
+        sat.prepare(getTotalNumInputChannels());
+    }
     
     // https://www.desmos.com/calculator/std4aemm5k
     
@@ -218,31 +221,35 @@ void CrannBethadhAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     
     // Oversample, Saturate and Back
     overSamplingBlock = oversampling.processSamplesUp(wetBlock);
-    applySaturation(overSamplingBlock);
-    applySaturation(overSamplingDryBlock);
+
+    for (auto channel = 0; channel < getTotalNumOutputChannels(); ++channel){
+        channelSaturators[channel].applySaturation(overSamplingBlock, rawDrive, rawMix);
+        channelSaturators[channel].applySaturation(overSamplingDryBlock, rawDrive, rawMix);
+    }
+
     oversampling.processSamplesDown(wetBlock);
     
     // Convolve and Mix Dry and Wet Signals
-    applyConvolution(juce::dsp::ProcessContextReplacing<float> (wetBlock), juce::dsp::ProcessContextReplacing<float> (dryBlock), rawConvo, rawDryGain);
+    
 
 }
 
-void CrannBethadhAudioProcessor::applySaturation(
-    juce::dsp::AudioBlock<float>& inputBlock) {
-    for (int sample = 0; sample < inputBlock.getNumSamples(); sample++) {
-        for (int channel = 0; channel < inputBlock.getNumChannels();
-             channel++) {
+// void CrannBethadhAudioProcessor::applySaturation(
+//     juce::dsp::AudioBlock<float>& inputBlock) {
+//     for (int sample = 0; sample < inputBlock.getNumSamples(); sample++) {
+//         for (int channel = 0; channel < inputBlock.getNumChannels();
+//              channel++) {
             
-            auto* channelData = inputBlock.getChannelPointer(channel);
+//             auto* channelData = inputBlock.getChannelPointer(channel);
 
-            const auto in = channelData[sample];
-            const auto sat = softClipper(in);
-            const auto satMix = in * (1.0f - rawMix) + rawMix * sat;
+//             const auto in = channelData[sample];
+//             const auto sat = softClipper(in);
+//             const auto satMix = in * (1.0f - rawMix) + rawMix * sat;
 
-            channelData[sample] = satMix;
-        }
-    }
-}
+//             channelData[sample] = satMix;
+//         }
+//     }
+// }
 
 void CrannBethadhAudioProcessor::applyConvolution(juce::dsp::ProcessContextReplacing<float> wetBlock, juce::dsp::ProcessContextReplacing<float> dryBlock, float wetAmount, float dryAmount)
 {
