@@ -24,7 +24,7 @@ namespace ub
 
     float Saturator::softClipper(float sample, float drive)
     {
-        const auto sat = 2 / piDivisor * std::atanf(drive * samples) / drive;
+        const auto sat = 2 / piDivisor * std::atanf(drive * sample) / drive;
             return sat;
     }
 }

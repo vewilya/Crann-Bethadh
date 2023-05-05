@@ -54,6 +54,8 @@ target_sources(${TARGET_NAME}
         Source/PluginProcessor.cpp
         Source/RotaryKnobStyleSheet.cpp
         Source/Title.cpp 
+        Source/Saturator.cpp
+        Source/Convolver.cpp
 )
 
 target_include_directories(${TARGET_NAME}
