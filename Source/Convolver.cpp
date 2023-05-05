@@ -24,13 +24,13 @@ namespace ub
         {
             convolutionEngine.process(juce::dsp::ProcessContextReplacing<float>(wetBlock));
             
-            wetGain.setGainLinear(wetAmount);
-            wetGain.process(wetBlock);
-            
-            // dryGain.setGainLinear(dryAmount);
-            // dryGain.process(dryBlock);
-            
-            wetBlock.add(dryBlock);
+            for (auto channel = 0; channel < spec.numChannels; ++channel)
+            {
+                for (auto sample = 0; sample < spec.maximumBlockSize; ++sample)
+                {
+                    dryBlock.setSample(channel, sample, dryBlock.getSample(channel, sample) * dryAmount + wetBlock.getSample(channel, sample) * wetAmount);
+                }
+            }
         }
     }  
 

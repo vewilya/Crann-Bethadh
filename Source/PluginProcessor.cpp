@@ -124,12 +124,6 @@ void CrannBethadhAudioProcessor::prepareToPlay (double sampleRate, int samplesPe
     // Make buffer copy
     wetBuffer.setSize(getTotalNumInputChannels(), samplesPerBlock);
     
-    for (auto i = 0; i < 2; ++i)
-    {
-        channelSaturators[i].prepare(getTotalNumInputChannels());
-        // channelConvolvers[i].prepare(sampleRate, samplesPerBlock, getTotalNumInputChannels());
-    }
-    
     convolver.prepare(sampleRate, samplesPerBlock, getTotalNumInputChannels());
 
     // Init Values
@@ -199,26 +193,20 @@ void CrannBethadhAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
+    // Create AudioBlocks for Oversampling
     juce::dsp::AudioBlock<float> block {buffer};
     juce::dsp::AudioBlock<float> overSamplingBlock {buffer};
     
     // Oversample, Saturate and Back
     overSamplingBlock = oversampling.processSamplesUp(block);
-
-    for (auto& sat : channelSaturators){
-        sat.applySaturation(overSamplingBlock, rawDrive, rawMix);
-    }
-
+    saturator.applySaturation(overSamplingBlock, rawDrive, rawMix);
     oversampling.processSamplesDown(block);
     
+    // Split into Dry and Wet Blocks
     wetBuffer.makeCopyOf(buffer, true);
     juce::dsp::AudioBlock<float> wetBlock {wetBuffer};
     
-    // Convolve and Mix Dry and Wet Signals
-    // for (auto& convolver : channelConvolvers)
-    // {
-    //     convolver.process(block, wetBlock, rawDryGain, rawConvo);
-    // }
+    // Convolve and Mix Blocks accordingly
     convolver.process(block, wetBlock, rawDryGain, rawConvo);
 }
 

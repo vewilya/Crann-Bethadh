@@ -26,8 +26,14 @@ CPMAddPackage(
     SOURCE_DIR ${LIB_DIR}/juce
 )
 
+CPMAddPackage(
+    NAME CLAP
+    GITHUB_REPOSITORY free-audio/clap-juce-extensions
+    GIT_TAG 0.26.0
+    SOURCE_DIR ${LIB_DIR}/clap-juce-extensions
+)
+
 set(TARGET_NAME CrannBethadhPlugin)
-set(JUCE_FORMATS AU VST3 Standalone)
 
 juce_add_plugin(${TARGET_NAME}
     COMPANY_NAME BearSoundProductions
@@ -37,10 +43,7 @@ juce_add_plugin(${TARGET_NAME}
     COPY_PLUGIN_AFTER_BUILD TRUE
     PLUGIN_MANUFACTURER_CODE BRSD
     PLUGIN_CODE CRBH
-    # LV2_URI https://github.com/vewilya/Crann-Bethadh
-    # LV2_SHARED_LIBRARY_NAME Crann_Bethadh                                  
-    FORMATS ${JUCE_FORMATS} 
-
+    FORMATS AU VST3 Standalone
     PRODUCT_NAME "Crann Bethadh"
 )
 
@@ -54,8 +57,8 @@ target_sources(${TARGET_NAME}
         Source/PluginProcessor.cpp
         Source/RotaryKnobStyleSheet.cpp
         Source/Title.cpp 
+        Source/Convolver.cpp    
         Source/Saturator.cpp
-        Source/Convolver.cpp
 )
 
 target_include_directories(${TARGET_NAME}

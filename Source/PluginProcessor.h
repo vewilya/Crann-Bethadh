@@ -91,8 +91,7 @@ private:
     
     juce::dsp::Oversampling<float> oversampling;
 
-    std::array<ub::Saturator, 2> channelSaturators;
-    // std::array<ub::Convolver, 2> channelConvolvers;
+    ub::Saturator saturator;
     ub::Convolver convolver;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrannBethadhAudioProcessor)

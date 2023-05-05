@@ -2,10 +2,7 @@
 
 namespace ub
 {   
-    void Saturator::prepare(int numChannels) {
-        this->numChannels = numChannels;
-    }
-    
+
     void Saturator::applySaturation(
     juce::dsp::AudioBlock<float>& inputBlock, float drive, float mix) {
         for (int sample = 0; sample < inputBlock.getNumSamples(); sample++) {
