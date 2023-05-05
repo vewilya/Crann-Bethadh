@@ -10,7 +10,7 @@
 
 #include "ColourMenu.h"
 
-ub_ui::ColourMenu::ColourMenu()
+ub::ColourMenu::ColourMenu()
 {
     setLookAndFeel (&menuLAF);
     setColour(juce::ComboBox::ColourIds::backgroundColourId, juce::Colours::white.withAlpha(.2f));
@@ -21,23 +21,23 @@ ub_ui::ColourMenu::ColourMenu()
 }
 
 
-ub_ui::ColourMenu::~ColourMenu()
+ub::ColourMenu::~ColourMenu()
 {
     setLookAndFeel (nullptr);
 }
 
-void ub_ui::ColourMenu::timerCallback()
+void ub::ColourMenu::timerCallback()
 {
     setColour(juce::ComboBox::ColourIds::backgroundColourId, (juce::Colours::white).withMultipliedAlpha(.3));
 };
 
-void ub_ui::ColourMenu::mouseEnter (const juce::MouseEvent& event)
+void ub::ColourMenu::mouseEnter (const juce::MouseEvent& event)
 {
     startTimer(100);
     
 };
 
-void ub_ui::ColourMenu::mouseExit (const juce::MouseEvent& event) 
+void ub::ColourMenu::mouseExit (const juce::MouseEvent& event) 
 {
     stopTimer();
 //    counter = 0.0f;

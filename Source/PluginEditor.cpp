@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-ProcessBLockAudioProcessorEditor::ProcessBLockAudioProcessorEditor (CrannBethadhAudioProcessor& p)
+ProcessBlockAudioProcessorEditor::ProcessBlockAudioProcessorEditor (CrannBethadhAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
     // Title
@@ -47,12 +47,12 @@ ProcessBLockAudioProcessorEditor::ProcessBLockAudioProcessorEditor (CrannBethadh
 
 }
 
-ProcessBLockAudioProcessorEditor::~ProcessBLockAudioProcessorEditor()
+ProcessBlockAudioProcessorEditor::~ProcessBlockAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void ProcessBLockAudioProcessorEditor::paint (juce::Graphics& g)
+void ProcessBlockAudioProcessorEditor::paint (juce::Graphics& g)
 {
     const juce::Colour bgColourOne (juce::Colour::fromString ("FF0B4B55"));
     const juce::Colour bgColourTwo (juce::Colour::fromString ("FF000000"));
@@ -84,7 +84,7 @@ void ProcessBLockAudioProcessorEditor::paint (juce::Graphics& g)
    
 }
 
-void ProcessBLockAudioProcessorEditor::resized()
+void ProcessBlockAudioProcessorEditor::resized()
 {
     auto w = getWidth();
     auto h = getHeight();
@@ -93,15 +93,15 @@ void ProcessBLockAudioProcessorEditor::resized()
     title.setBoundsRelative(0.0f, 0.0f, 1.0f, 1.0f);
     
     // IR
-    colourMenu.setBounds(w * .35, 20, w * .3, 30);
+    colourMenu.setBounds(w * .35f, 20.0f, w * .3f, 30.0f);
     
     // LAF Slider
-    myKnob.setBounds(w * .3, h * .4, w*.4, h*.4);
+    myKnob.setBounds(w * .3f, h * .4f, w *.4f, h*.4f);
     myKnob.repaint();
     
 }
 
-void  ProcessBLockAudioProcessorEditor::colourMenuChanged() {
+void  ProcessBlockAudioProcessorEditor::colourMenuChanged() {
     {
         juce::File result;
      
@@ -122,10 +122,11 @@ void  ProcessBLockAudioProcessorEditor::colourMenuChanged() {
             juce::FileInputStream stream (result);
             if (stream.openedOk())
             {
-                audioProcessor.getSavedFile() = result;
-                // audioProcessor.getRoot() = result.getParentDirectory().getFullPathName();
-                audioProcessor.getIrLoader().reset();
-                audioProcessor.getIrLoader().loadImpulseResponse(result, juce::dsp::Convolution::Stereo::yes, juce::dsp::Convolution::Trim::yes, 0); // 0 to initialise the size of the loaded file dynamically!
+                audioProcessor.getConvolver().getSavedFile() = result;
+                audioProcessor.getConvolver().getRoot() = result.getParentDirectory().getFullPathName();
+                audioProcessor.getConvolver().getConvolutionEngine().reset();
+                // audioProcessor.getConvolver().getConvolutionEngine().loadImpulseResponse(result, juce::dsp::Convolution::Stereo::yes, juce::dsp::Convolution::Trim::yes, 0); // 0 to initialise the size of the loaded file dynamically!
+                audioProcessor.getConvolver().loadIR(result);
             }
             
         }

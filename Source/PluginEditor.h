@@ -17,11 +17,11 @@
 //==============================================================================
 /**
 */
-class ProcessBLockAudioProcessorEditor  : public juce::AudioProcessorEditor
+class ProcessBlockAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
-    ProcessBLockAudioProcessorEditor (CrannBethadhAudioProcessor&);
-    ~ProcessBLockAudioProcessorEditor() override;
+    ProcessBlockAudioProcessorEditor (CrannBethadhAudioProcessor&);
+    ~ProcessBlockAudioProcessorEditor() override;
 
     //==============================================================================
     void paint (juce::Graphics&) override;
@@ -39,7 +39,7 @@ private:
     BigKnob myKnob;
 
     // Colour Menu
-    ub_ui::ColourMenu colourMenu;
+    ub::ColourMenu colourMenu;
     
     // Slider Attachments
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixSliderAttach;
@@ -47,5 +47,5 @@ private:
     // IR Menu
     void colourMenuChanged();
      
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProcessBLockAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProcessBlockAudioProcessorEditor)
 };

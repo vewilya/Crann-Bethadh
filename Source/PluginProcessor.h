@@ -9,6 +9,9 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Saturator.h"
+#include "Convolver.h"
+#include <array>
 
 constexpr auto MIX_PARAMETER = "mix";
 
@@ -65,22 +68,16 @@ public:
     // Value Tree =======================================================================
     juce::AudioProcessorValueTreeState& getTreeState() {
       return treeState;
-    }
-    
-    juce::dsp::Convolution& getIrLoader() {
-        return irLoader;
-    }
+    }   
 
-    juce::File& getSavedFile() {
-        return savedFile;
+    ub::Convolver& getConvolver() {
+      return convolver;
     }
-     
 private:
-    juce::dsp::Convolution irLoader;
-    juce::File root, savedFile;
+    
     juce::AudioProcessorValueTreeState treeState;
     juce::dsp::ProcessSpec spec;
-    juce::AudioBuffer<float> dryBuffer;
+    juce::AudioBuffer<float> wetBuffer;
     
     float rawDrive = 1.0f;
     float rawMix = 0.0f;
@@ -92,17 +89,10 @@ private:
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void parameterChanged (const juce::String& parameterID, float newValue) override;
     
-    void applySaturation(juce::dsp::AudioBlock<float>& inputBlock);
-    
-    float softClipper(float samples);
-    float hardClipper(float samples);
-    
-    void applyConvolution(juce::dsp::ProcessContextReplacing<float> wetContext, juce::dsp::ProcessContextReplacing<float> dryContext, float wetAmount, float dryAmount);
-    
-    juce::dsp::Gain<float> convoGain;
-    juce::dsp::Gain<float> dryGain;
-    
     juce::dsp::Oversampling<float> oversampling;
+
+    ub::Saturator saturator;
+    ub::Convolver convolver;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrannBethadhAudioProcessor)
 };

@@ -49,7 +49,7 @@ void CrannBethadhAudioProcessor::parameterChanged(const juce::String &parameterI
         rawMix = newValue;
         rawConvo = powf(newValue, 1.0f / tan(1.25f));
         rawDryGain =  1.0f - powf(newValue, tan(.3));
-        rawDrive = powf(newValue, tan(0.4)) * 20.0f + 1.0f;
+        rawDrive = powf(newValue, tan(0.4f)) * 7.0f + 1.0f;
     }
 }
 
@@ -118,28 +118,15 @@ void CrannBethadhAudioProcessor::changeProgramName (int index, const juce::Strin
 //==============================================================================
 void CrannBethadhAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    
-    spec.sampleRate = sampleRate;
-    spec.maximumBlockSize = samplesPerBlock;
-    spec.numChannels = getTotalNumOutputChannels();
-    
     // Oversampling
     oversampling.initProcessing(samplesPerBlock);
     
-    // Passing that to the dry buffer copy
-    dryBuffer.setSize(spec.numChannels, spec.maximumBlockSize);
+    // Make buffer copy
+    wetBuffer.setSize(getTotalNumInputChannels(), samplesPerBlock);
     
-    convoGain.reset();
-    convoGain.prepare(spec);
-    
-    dryGain.reset();
-    dryGain.prepare(spec);
-    
-    irLoader.reset();
-    irLoader.prepare(spec);
-    
-    
-    
+    convolver.prepare(sampleRate, samplesPerBlock, getTotalNumInputChannels());
+
+    // Init Values
     // https://www.desmos.com/calculator/std4aemm5k
     
     rawMix = *treeState.getRawParameterValue(MIX_PARAMETER);
@@ -206,76 +193,21 @@ void CrannBethadhAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
-//    const auto latency = irLoader.getLatency();
-    
-    dryBuffer.makeCopyOf(buffer, true);
-
-    juce::dsp::AudioBlock<float> dryBlock {dryBuffer};
-    juce::dsp::AudioBlock<float> overSamplingDryBlock {dryBuffer};
-
-    juce::dsp::AudioBlock<float> wetBlock {buffer};
+    // Create AudioBlocks for Oversampling
+    juce::dsp::AudioBlock<float> block {buffer};
     juce::dsp::AudioBlock<float> overSamplingBlock {buffer};
     
     // Oversample, Saturate and Back
-    overSamplingBlock = oversampling.processSamplesUp(wetBlock);
-    applySaturation(overSamplingBlock);
-    applySaturation(overSamplingDryBlock);
-    oversampling.processSamplesDown(wetBlock);
+    overSamplingBlock = oversampling.processSamplesUp(block);
+    saturator.applySaturation(overSamplingBlock, rawDrive, rawMix);
+    oversampling.processSamplesDown(block);
     
-    // Convolve and Mix Dry and Wet Signals
-    applyConvolution(juce::dsp::ProcessContextReplacing<float> (wetBlock), juce::dsp::ProcessContextReplacing<float> (dryBlock), rawConvo, rawDryGain);
-
-}
-
-void CrannBethadhAudioProcessor::applySaturation(
-    juce::dsp::AudioBlock<float>& inputBlock) {
-    for (int sample = 0; sample < inputBlock.getNumSamples(); sample++) {
-        for (int channel = 0; channel < inputBlock.getNumChannels();
-             channel++) {
-            
-            auto* channelData = inputBlock.getChannelPointer(channel);
-
-            const auto in = channelData[sample];
-            const auto sat = softClipper(in);
-            const auto satMix = in * (1.0f - rawMix) + rawMix * sat;
-
-            channelData[sample] = satMix;
-        }
-    }
-}
-
-void CrannBethadhAudioProcessor::applyConvolution(juce::dsp::ProcessContextReplacing<float> wetBlock, juce::dsp::ProcessContextReplacing<float> dryBlock, float wetAmount, float dryAmount)
-{
-    if (irLoader.getCurrentIRSize() > 0)
-    {
-        irLoader.process(juce::dsp::ProcessContextReplacing<float>(wetBlock));
-        
-        convoGain.setGainLinear(wetAmount);
-        convoGain.process(wetBlock);
-        
-        dryGain.setGainLinear(dryAmount);
-        dryGain.process(dryBlock);
-        
-        wetBlock.getOutputBlock().add(dryBlock.getOutputBlock());
-    }
-}
-
-
-float CrannBethadhAudioProcessor::softClipper(float samples)
-{
-    const auto sat = 2 / piDivisor * std::atanf(rawDrive * samples) / rawDrive;
-        return sat;
-}
-
-float CrannBethadhAudioProcessor::hardClipper(float samples)
-{
-    samples *= rawDrive;
+    // Split into Dry and Wet Blocks
+    wetBuffer.makeCopyOf(buffer, true);
+    juce::dsp::AudioBlock<float> wetBlock {wetBuffer};
     
-    if (std::abs(samples) > 1.0)
-    {
-        samples *= 1.0 / std::abs(samples);
-    }
-        return samples;
+    // Convolve and Mix Blocks accordingly
+    convolver.process(block, wetBlock, rawDryGain, rawConvo);
 }
 
 //==============================================================================
@@ -286,7 +218,7 @@ bool CrannBethadhAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* CrannBethadhAudioProcessor::createEditor()
 {
-    return new ProcessBLockAudioProcessorEditor (*this);
+    return new ProcessBlockAudioProcessorEditor (*this);
 //    return new juce::GenericAudioProcessorEditor (*this);
 }
 

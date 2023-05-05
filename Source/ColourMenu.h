@@ -12,7 +12,7 @@
 #include "MenuStyleSheet.h"
 
 
-namespace ub_ui
+namespace ub
 {
 
 class ColourMenu : public juce::ComboBox, private juce::Timer
