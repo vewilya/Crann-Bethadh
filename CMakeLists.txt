@@ -26,6 +26,13 @@ CPMAddPackage(
     SOURCE_DIR ${LIB_DIR}/juce
 )
 
+CPMAddPackage(
+    NAME CLAP
+    GITHUB_REPOSITORY free-audio/clap-juce-extensions
+    GIT_TAG 0.26.0
+    SOURCE_DIR ${LIB_DIR}/clap-juce-extensions
+)
+
 set(TARGET_NAME CrannBethadhPlugin)
 
 juce_add_plugin(${TARGET_NAME}
@@ -85,3 +92,7 @@ target_link_libraries(${TARGET_NAME}
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
 )
+
+clap_juce_extensions_plugin(TARGET ${TARGET_NAME}
+        CLAP_ID "com.my-cool-plugs.my-target"
+        CLAP_FEATURES instrument "virtual analog" gritty basses leads pads)
