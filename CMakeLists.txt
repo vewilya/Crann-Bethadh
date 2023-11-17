@@ -29,8 +29,16 @@ CPMAddPackage(
 CPMAddPackage(
     NAME CLAP
     GITHUB_REPOSITORY free-audio/clap-juce-extensions
-    GIT_TAG 0.26.0
+    GIT_TAG 9ed8659
     SOURCE_DIR ${LIB_DIR}/clap-juce-extensions
+)
+
+CPMAddPackage(
+    NAME GOOGLETEST
+    GITHUB_REPOSITORY google/googletest
+    VERSION 1.14.0
+    SOURCE_DIR ${LIB_DIR}/googletest
+    OPTIONS "gtest_force_shared_crt"
 )
 
 set(TARGET_NAME CrannBethadhPlugin)
@@ -40,7 +48,7 @@ juce_add_plugin(${TARGET_NAME}
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
-    COPY_PLUGIN_AFTER_BUILD TRUE
+    COPY_PLUGIN_AFTER_BUILD FALSE
     PLUGIN_MANUFACTURER_CODE BRSD
     PLUGIN_CODE CRBH
     FORMATS AU VST3 Standalone
@@ -98,3 +106,6 @@ target_link_libraries(${TARGET_NAME}
 clap_juce_extensions_plugin(TARGET ${TARGET_NAME}
         CLAP_ID "com.my-cool-plugs.my-target"
         CLAP_FEATURES instrument "virtual analog" gritty basses leads pads)
+
+enable_testing()
+add_subdirectory(test)
