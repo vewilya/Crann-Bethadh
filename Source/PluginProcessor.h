@@ -1,27 +1,22 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
 #include "Saturator.h"
+#include "SaturatorBoutique.h"
 #include "Convolver.h"
-#include <array>
+#include "PluginParameters.h"
 
 constexpr auto MIX_PARAMETER = "mix";
+constexpr auto SATTYPE_PARAMETER = "sattype";
+constexpr auto DRIVE_PARAMETER = "drive";
+constexpr auto FEEDBACK_PARAMETER = "feedback";
+constexpr auto CONVOLUTION_PARAMETER = "convolution";
 
 //==============================================================================
 /**
 */
-class CrannBethadhAudioProcessor  : public juce::AudioProcessor, juce::AudioProcessorValueTreeState::Listener
-                            #if JucePlugin_Enable_ARA
-                             , public juce::AudioProcessorARAExtension
-                            #endif
+class CrannBethadhAudioProcessor  : public juce::AudioProcessor, 
+                                          juce::AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -73,17 +68,18 @@ public:
     ub::Convolver& getConvolver() {
       return convolver;
     }
+
+    ub::dsp::Saturator& getSaturator() {
+      return saturationModule;
+    }
 private:
     
     juce::AudioProcessorValueTreeState treeState;
     juce::dsp::ProcessSpec spec;
     juce::AudioBuffer<float> wetBuffer;
-    
-    float rawDrive = 1.0f;
-    float rawMix = 0.0f;
-    float rawConvo = 0.0f;
-    float rawDryGain { 1.0f };
-    
+      
+    ub::PluginParameters pluginParams;
+
     static constexpr float piDivisor = 2.0f / juce::MathConstants<float>::pi;
 
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
@@ -91,7 +87,7 @@ private:
     
     juce::dsp::Oversampling<float> oversampling;
 
-    ub::Saturator saturator;
+    ub::dsp::Saturator saturationModule;
     ub::Convolver convolver;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrannBethadhAudioProcessor)

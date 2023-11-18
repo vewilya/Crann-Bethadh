@@ -1,11 +1,3 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
@@ -35,14 +27,24 @@ private:
     // Reference Audio Processor
     CrannBethadhAudioProcessor& audioProcessor;
     
+    // Saturation Menu
+    juce::ComboBox saturationMenu;
+
     // Set up Main Knob
     BigKnob myKnob;
+
+    // Sliders
+    juce::Slider driveSlider, mixSlider;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> driveSliderAttach;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixSliderAttach;
+
+    juce::Label driveLabel, mixLabel; 
 
     // Colour Menu
     ub::ColourMenu colourMenu;
     
     // Slider Attachments
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixSliderAttach;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> convolutionSliderAttach;
  
     // IR Menu
     void colourMenuChanged();

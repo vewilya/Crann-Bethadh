@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
 project(CrannBethadh VERSION 0.0.12)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs")
 
 # setup CPM
@@ -48,7 +48,7 @@ juce_add_plugin(${TARGET_NAME}
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
-    COPY_PLUGIN_AFTER_BUILD FALSE
+    COPY_PLUGIN_AFTER_BUILD TRUE
     PLUGIN_MANUFACTURER_CODE BRSD
     PLUGIN_CODE CRBH
     FORMATS AU VST3 Standalone
@@ -63,10 +63,13 @@ target_sources(${TARGET_NAME}
         Source/MenuStyleSheet.cpp
         Source/PluginEditor.cpp
         Source/PluginProcessor.cpp
+        Source/PluginParameters.h
         Source/RotaryKnobStyleSheet.cpp
         Source/Title.cpp 
         Source/Convolver.cpp    
         Source/Saturator.cpp
+        Source/SaturatorBoutique.h
+        Source/DelayLine.cpp
 )
 
 target_include_directories(${TARGET_NAME}
@@ -83,9 +86,9 @@ target_compile_definitions(${TARGET_NAME}
 
 
 juce_add_binary_data(Images SOURCES
- Resources/CrannBethadh.png
- Resources/Mask.png
- Resources/title.png
+    Resources/CrannBethadh.png
+    Resources/Mask.png
+    Resources/title.png
 )
 
 set(JUCE_DEPENDENCIES
@@ -104,8 +107,8 @@ target_link_libraries(${TARGET_NAME}
 )
 
 clap_juce_extensions_plugin(TARGET ${TARGET_NAME}
-        CLAP_ID "com.my-cool-plugs.my-target"
-        CLAP_FEATURES instrument "virtual analog" gritty basses leads pads)
+        CLAP_ID "com.bearsound.crannbethadh"
+        CLAP_FEATURES audio-effect "spatial" reverb convolution mysterious )
 
 enable_testing()
 add_subdirectory(test)

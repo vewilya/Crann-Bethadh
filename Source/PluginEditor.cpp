@@ -36,14 +36,59 @@ ProcessBlockAudioProcessorEditor::ProcessBlockAudioProcessorEditor (CrannBethadh
     
     colourMenu.setSelectedId (1);
     colourMenu.onChange = [this] { colourMenuChanged(); };
+
+    // Saturation Menu
+    addAndMakeVisible(saturationMenu);
+    saturationMenu.addSectionHeading ("Soft Clippers");
+    saturationMenu.addItemList(SaturatorBoutique::getSatChoices(), 0);
+    saturationMenu.addSeparator();
+    saturationMenu.addSectionHeading ("Hard Clippers");
+
+    saturationMenu.setSelectedId (1);
+    saturationMenu.onChange = [this] { 
+        audioProcessor.getSaturator().setSaturator(static_cast<SatType>((int) saturationMenu.getSelectedId() - 1));
+        std::cout << "Changed Saturation Algo to: " << saturationMenu.getSelectedId() - 1 << std::endl;
+    };
         
     addAndMakeVisible(myKnob);
-    myKnob.setSize(getWidth() * .4, getWidth() * .4
-                   );
+    myKnob.setSize(getWidth() * .4, getWidth() * .4);
     
-    mixSliderAttach =
+    convolutionSliderAttach =
         std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
-            audioProcessor.getTreeState(), MIX_PARAMETER, myKnob);
+            audioProcessor.getTreeState(), CONVOLUTION_PARAMETER, myKnob);
+
+
+    addAndMakeVisible(driveSlider);
+    driveSliderAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.getTreeState(), DRIVE_PARAMETER, driveSlider);
+
+    driveSlider.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    driveSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 50, 20);
+    driveSlider.setRange(0.0f, 1.0f, 0.01f);
+    // driveSlider.setValue(0.0f);
+    // driveSlider.setColour(juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colours::cyan);
+    // driveSlider.setColour(juce::Slider::ColourIds::rotarySliderOutlineColourId, juce::Colours::grey);
+    // driveSlider.setColour(juce::Slider::ColourIds::textBoxTextColourId, juce::Colours::white);
+    // driveSlider.setColour(juce::Slider::ColourIds::textBoxBackgroundColourId, juce::Colours::black);
+
+    addAndMakeVisible(driveLabel);
+    driveLabel.setText("Drive", juce::dontSendNotification);
+    driveLabel.attachToComponent(&driveSlider, false);
+
+    addAndMakeVisible(mixSlider);
+    mixSliderAttach = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.getTreeState(), MIX_PARAMETER, mixSlider);
+    mixSlider.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
+    mixSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, true, 50, 20);
+    mixSlider.setRange(0.0f, 1.0f, 0.01f);
+    // mixSlider.setValue(0.0f);
+    // mixSlider.setColour(juce::Slider::ColourIds::rotarySliderFillColourId, juce::Colours::cyan);
+    // mixSlider.setColour(juce::Slider::ColourIds::rotarySliderOutlineColourId, juce::Colours::grey);
+    // mixSlider.setColour(juce::Slider::ColourIds::textBoxTextColourId, juce::Colours::white);
+    // mixSlider.setColour(juce::Slider::ColourIds::textBoxBackgroundColourId, juce::Colours::black);
+
+    addAndMakeVisible(mixLabel);
+    mixLabel.setText("Mix", juce::dontSendNotification);
+    mixLabel.attachToComponent(&mixSlider, false);
+
 
 }
 
@@ -94,11 +139,17 @@ void ProcessBlockAudioProcessorEditor::resized()
     
     // IR
     colourMenu.setBounds(w * .35f, 20.0f, w * .3f, 30.0f);
+
+    // Saturation Menu
+    saturationMenu.setBounds(w * .35f, h * .8f, w * .3f, 30.0f);
     
     // LAF Slider
     myKnob.setBounds(w * .3f, h * .4f, w *.4f, h*.4f);
     myKnob.repaint();
-    
+
+    // Drive Slider
+    driveSlider.setBounds(w * .1f, h * .4f, w * .2f, w * .2f);
+    mixSlider.setBounds(w * .7f, h * .4f, w * .2f, w * .2f);
 }
 
 void  ProcessBlockAudioProcessorEditor::colourMenuChanged() {

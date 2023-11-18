@@ -1,11 +1,3 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
@@ -24,11 +16,19 @@ oversampling (2, 3, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR)
 #endif
 {
     treeState.addParameterListener(MIX_PARAMETER, this);
+    treeState.addParameterListener(SATTYPE_PARAMETER, this);
+    treeState.addParameterListener(DRIVE_PARAMETER, this);
+    treeState.addParameterListener(FEEDBACK_PARAMETER, this);
+    treeState.addParameterListener(CONVOLUTION_PARAMETER, this);
 }
 
 CrannBethadhAudioProcessor::~CrannBethadhAudioProcessor()
 {
     treeState.removeParameterListener(MIX_PARAMETER, this);
+    treeState.removeParameterListener(SATTYPE_PARAMETER, this);
+    treeState.removeParameterListener(DRIVE_PARAMETER, this);
+    treeState.removeParameterListener(FEEDBACK_PARAMETER, this);
+    treeState.removeParameterListener(CONVOLUTION_PARAMETER, this);
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout CrannBethadhAudioProcessor::createParameterLayout()
@@ -36,8 +36,16 @@ juce::AudioProcessorValueTreeState::ParameterLayout CrannBethadhAudioProcessor::
     std::vector <std::unique_ptr<juce::RangedAudioParameter>> params;
     
     auto pMix = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { MIX_PARAMETER, 1 }, MIX_PARAMETER,  0.0f, 1.0f, 0.0f );
+    auto pSatType = std::make_unique<juce::AudioParameterChoice> (juce::ParameterID { SATTYPE_PARAMETER, 1 }, SATTYPE_PARAMETER, SaturatorBoutique::getSatChoices(), 0);
+    auto pDrive = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { DRIVE_PARAMETER, 1 }, DRIVE_PARAMETER,  0.0f, 1.0f, 0.0f );
+    auto pFeedback = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { FEEDBACK_PARAMETER, 1 }, FEEDBACK_PARAMETER,  0.0f, 1.0f, 0.0f );
+    auto pConvo = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { CONVOLUTION_PARAMETER, 1 }, CONVOLUTION_PARAMETER,  0.0f, 1.0f, 0.0f );
     
     params.push_back(std::move(pMix));
+    params.push_back(std::move(pSatType));
+    params.push_back(std::move(pDrive));
+    params.push_back(std::move(pFeedback));
+    params.push_back(std::move(pConvo));
     return { params.begin(), params.end() };
 }
 
@@ -46,11 +54,17 @@ void CrannBethadhAudioProcessor::parameterChanged(const juce::String &parameterI
     
     if (parameterID == MIX_PARAMETER)
     {
-        rawMix = newValue;
-        rawConvo = powf(newValue, 1.0f / tan(1.25f));
-        rawDryGain =  1.0f - powf(newValue, tan(.3));
-        rawDrive = powf(newValue, tan(0.4f)) * 7.0f + 1.0f;
+        pluginParams.mix = newValue;
     }
+    else if (parameterID == DRIVE_PARAMETER)
+    {
+        pluginParams.drive = newValue;
+    }
+    else if (parameterID == CONVOLUTION_PARAMETER)
+    {
+        pluginParams.convolution = newValue;
+    }
+
 }
 
 //==============================================================================
@@ -126,15 +140,6 @@ void CrannBethadhAudioProcessor::prepareToPlay (double sampleRate, int samplesPe
     
     convolver.prepare(sampleRate, samplesPerBlock, getTotalNumInputChannels());
 
-    // Init Values
-    // https://www.desmos.com/calculator/std4aemm5k
-    
-    rawMix = *treeState.getRawParameterValue(MIX_PARAMETER);
-    rawConvo = powf(*treeState.getRawParameterValue(MIX_PARAMETER), 1.0f / tan(1.25f));
-    rawDryGain =  1.0f - powf(*treeState.getRawParameterValue(MIX_PARAMETER), tan(.3));
-    rawDrive = powf(*treeState.getRawParameterValue(MIX_PARAMETER), tan(0.4)) * 20.0f + 1.0f;
-    
-    
 }
 
 void CrannBethadhAudioProcessor::releaseResources()
@@ -187,6 +192,8 @@ void foo(ClassName& c);
 void CrannBethadhAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
+    juce::ignoreUnused (midiMessages);
+
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
@@ -199,7 +206,7 @@ void CrannBethadhAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     
     // Oversample, Saturate and Back
     overSamplingBlock = oversampling.processSamplesUp(block);
-    saturator.applySaturation(overSamplingBlock, rawDrive, rawMix);
+    saturationModule.process(overSamplingBlock, pluginParams);
     oversampling.processSamplesDown(block);
     
     // Split into Dry and Wet Blocks
@@ -207,7 +214,7 @@ void CrannBethadhAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     juce::dsp::AudioBlock<float> wetBlock {wetBuffer};
     
     // Convolve and Mix Blocks accordingly
-    convolver.process(block, wetBlock, rawDryGain, rawConvo);
+    convolver.process(block, wetBlock, 1.0 - pluginParams.convolution, pluginParams.convolution);
 }
 
 //==============================================================================
@@ -237,7 +244,7 @@ void CrannBethadhAudioProcessor::setStateInformation (const void* data, int size
     if (tree.isValid())
     {
         treeState.state = tree;
-        rawMix = *treeState.getRawParameterValue(MIX_PARAMETER);
+
     }
 }
 
