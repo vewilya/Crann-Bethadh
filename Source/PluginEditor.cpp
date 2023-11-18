@@ -86,7 +86,7 @@ ProcessBlockAudioProcessorEditor::ProcessBlockAudioProcessorEditor (CrannBethadh
     // mixSlider.setColour(juce::Slider::ColourIds::textBoxBackgroundColourId, juce::Colours::black);
 
     addAndMakeVisible(mixLabel);
-    mixLabel.setText("Mix", juce::dontSendNotification);
+    mixLabel.setText("Feedback", juce::dontSendNotification);
     mixLabel.attachToComponent(&mixSlider, false);
 
 

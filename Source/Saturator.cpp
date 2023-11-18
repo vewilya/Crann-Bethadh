@@ -16,7 +16,7 @@ Saturator::~Saturator()
 
 void Saturator::process(juce::dsp::AudioBlock<float> &inputBlock, const PluginParameters &params)
 {
-    const auto feedback = params.mix * 0.97f;
+    const auto feedback = params.mix * 0.9f;
     const auto drive = 1.0f + params.drive * 40.0f;
 
     for (auto channel = 0; channel < numChannels; channel++)
