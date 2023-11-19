@@ -214,7 +214,7 @@ void CrannBethadhAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     juce::dsp::AudioBlock<float> wetBlock {wetBuffer};
     
     // Convolve and Mix Blocks accordingly
-    convolver.process(block, wetBlock, 1.0 - pluginParams.convolution, pluginParams.convolution);
+    // convolver.process(block, wetBlock, 1.0 - pluginParams.convolution, pluginParams.convolution);
 }
 
 //==============================================================================

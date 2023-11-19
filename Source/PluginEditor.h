@@ -2,9 +2,8 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "Title.h"
-#include "RotaryKnobStyleSheet.h"
-#include "ColourMenu.h"
+
+#include <choc_WebView.h>
 
 //==============================================================================
 /**
@@ -20,33 +19,22 @@ public:
     void resized() override;
 
 private:
-    float colPosOne { .9f }, colPosTwo { .1f };
-    
-    ub::Title title;
+    std::unique_ptr<choc::ui::WebView> webView;
+
+    //==============================================================================
+    choc::value::Value handleSetParameterValueEvent(const choc::value::ValueView& e);
+
+    #if JUCE_MAC
+        juce::NSViewComponent viewContainer;
+    #elif JUCE_WINDOWS
+        juce::HWNDComponent viewContainer;
+    #else
+        #error "No Linux support"
+    #endif
     
     // Reference Audio Processor
     CrannBethadhAudioProcessor& audioProcessor;
     
-    // Saturation Menu
-    juce::ComboBox saturationMenu;
-
-    // Set up Main Knob
-    BigKnob myKnob;
-
-    // Sliders
-    juce::Slider driveSlider, mixSlider;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> driveSliderAttach;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixSliderAttach;
-
-    juce::Label driveLabel, mixLabel; 
-
-    // Colour Menu
-    ub::ColourMenu colourMenu;
-    
-    // Slider Attachments
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> convolutionSliderAttach;
- 
-    // IR Menu
     void colourMenuChanged();
      
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProcessBlockAudioProcessorEditor)

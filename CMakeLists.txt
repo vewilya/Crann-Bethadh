@@ -5,6 +5,9 @@ project(CrannBethadh VERSION 0.0.12)
 set(CMAKE_CXX_STANDARD 20)
 set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs")
 
+# Get Webview Content Folder
+set(ASSETS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ui/dist")
+
 # setup CPM
 set(CPM_DOWNLOAD_VERSION 0.34.0)
 set(CPM_DOWNLOAD_LOCATION "${LIB_DIR}/cpm/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
@@ -51,6 +54,8 @@ juce_add_plugin(${TARGET_NAME}
     COPY_PLUGIN_AFTER_BUILD TRUE
     PLUGIN_MANUFACTURER_CODE BRSD
     PLUGIN_CODE CRBH
+    APP_SANDBOX_ENABLED TRUE
+    APP_SANDBOX_OPTIONS com.apple.security.network.client com.apple.security.files.user-selected.read-write
     FORMATS AU VST3 Standalone
     PRODUCT_NAME "Crann Bethadh"
 )
@@ -70,11 +75,14 @@ target_sources(${TARGET_NAME}
         Source/Saturator.cpp
         Source/SaturatorBoutique.h
         Source/DelayLine.cpp
+        Source/DataStruct.h
 )
 
 target_include_directories(${TARGET_NAME}
     PRIVATE
         Sources
+        ${LIB_DIR}/choc/gui
+        ${LIB_DIR}/choc/javascript
 )
 
 target_compile_definitions(${TARGET_NAME}
@@ -89,6 +97,9 @@ juce_add_binary_data(Images SOURCES
     Resources/CrannBethadh.png
     Resources/Mask.png
     Resources/title.png
+    ui/dist/Index.html
+    # ui/dist/assets/index-RGnjRSa1.js
+    # ui/dist/assets/index-JwSxX1cZ.css
 )
 
 set(JUCE_DEPENDENCIES

@@ -5,3 +5,6 @@ Builds/
 build/
 libs/
 JuceLibraryCode/
+ui/node_modules/
+ui/dist
+ui/.vscode
