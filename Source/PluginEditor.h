@@ -21,6 +21,8 @@ public:
 private:
     std::unique_ptr<choc::ui::WebView> webView;
 
+    CrannBethadhAudioProcessor& processorRef;
+    
     //==============================================================================
     choc::value::Value handleSetParameterValueEvent(const choc::value::ValueView& e);
 

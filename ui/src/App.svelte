@@ -43,33 +43,34 @@
     Warm Fuzz through Veiled Glass and Nebula
   </p> -->
 
+  <div class="sliders">
+    <h3>
+      {"Drive: "+($pluginParams.drive * 100).toFixed(0)+'%'}
+    </h3>                
+    <div class="range">
+      <div class="slidecontainer">
+        <input type="range" min=0 max=1 step=0.00001 bind:value={$pluginParams.drive} class="slider" id="myRange" on:input={(e) => {requestParamValueUpdate("drive", e)}}>
+      </div>
+    </div>
   
-			          <h3>
-                  {"Drive: "+($pluginParams.drive * 100).toFixed(0)+'%'}
-                </h3>                
-                <div class="range">
-                  <div class="slidecontainer">
-                    <input type="range" min=0 max=1 step=0.00001 bind:value={$pluginParams.drive} class="slider" id="myRange" on:input={(e) => {requestParamValueUpdate("drive", e)}}>
-                  </div>
-                </div>
-
-                <h3>
-                  {"Convolution: "+($pluginParams.convolution * 100).toFixed(0)+'%'}
-                </h3>                
-                <div class="range">
-                  <div class="slidecontainer">
-                    <input type="range" min=0 max=1 step=0.00001 bind:value={$pluginParams.convolution} class="slider" id="myRange" on:input={(e) => {requestParamValueUpdate("convolution", e)}}>
-                  </div>
-                </div>
-
-                <h3>
-                  {"Feedback: "+($pluginParams.feedback * 100).toFixed(0)+'%'}
-                </h3>                
-                <div class="range">
-                  <div class="slidecontainer">
-                    <input type="range" min=0 max=1 step=0.00001 bind:value={$pluginParams.feedback} class="slider" id="myRange" on:input={(e) => {requestParamValueUpdate("feedback", e)}}>
-                  </div>
-                </div>
+    <h3>
+      {"Convolution: "+($pluginParams.convolution * 100).toFixed(0)+'%'}
+    </h3>                
+    <div class="range">
+      <div class="slidecontainer">
+        <input type="range" min=0 max=1 step=0.00001 bind:value={$pluginParams.convolution} class="slider" id="myRange" on:input={(e) => {requestParamValueUpdate("convolution", e)}}>
+      </div>
+    </div>
+  
+    <h3>
+      {"Feedback: "+($pluginParams.feedback * 100).toFixed(0)+'%'}
+    </h3>                
+    <div class="range">
+      <div class="slidecontainer">
+        <input type="range" min=0 max=1 step=0.00001 bind:value={$pluginParams.feedback} class="slider" id="myRange" on:input={(e) => {requestParamValueUpdate("feedback", e)}}>
+      </div>
+    </div>
+  </div>
 
       
          
@@ -97,6 +98,7 @@
   }
 
   h3 {
+    color: white;
     text-align: center;
     font-family: 'Style Script', cursive;
     font-size: 2em;
@@ -157,6 +159,10 @@
 
   input {
     z-index: 10;
+  }
+
+  .sliders {
+    margin-top: 10vh;
   }
 
 </style>

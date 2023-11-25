@@ -12,7 +12,7 @@ double numberFromChocValue(const choc::value::ValueView& v) {
 
 //==============================================================================
 ProcessBlockAudioProcessorEditor::ProcessBlockAudioProcessorEditor (CrannBethadhAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p), processorRef (p)
 {
     // UI Size and Resizing
     setSize (600, 600);
@@ -26,19 +26,19 @@ ProcessBlockAudioProcessorEditor::ProcessBlockAudioProcessorEditor (CrannBethadh
         opts.enableDebugMode = true;
     #endif
     
-        opts.fetchResource = [=](const choc::ui::WebView::Options::Path& p) -> std::optional<choc::ui::WebView::Options::Resource> {
-        auto relPath = "." + (p == "/" ? "/index.html" : p);
-        auto f = assetDirectory.getChildFile(relPath);
-        juce::MemoryBlock mb;
+    //     opts.fetchResource = [=](const choc::ui::WebView::Options::Path& p) -> std::optional<choc::ui::WebView::Options::Resource> {
+    //     auto relPath = "." + (p == "/" ? "/index.html" : p);
+    //     auto f = assetDirectory.getChildFile(relPath);
+    //     juce::MemoryBlock mb;
 
-        if (!f.existsAsFile() || !f.loadFileAsData(mb))
-            return {};
+    //     if (!f.existsAsFile() || !f.loadFileAsData(mb))
+    //         return {};
 
-        return choc::ui::WebView::Options::Resource {
-            std::vector<uint8_t>(mb.begin(), mb.end()),
-            getMimeType(f.getFileExtension().toStdString())
-        };
-    };
+    //     return choc::ui::WebView::Options::Resource {
+    //         std::vector<uint8_t>(mb.begin(), mb.end()),
+    //         getMimeType(f.getFileExtension().toStdString())
+    //     };
+    // };
 
     webView = std::make_unique<choc::ui::WebView>(opts);
 
@@ -76,8 +76,21 @@ ProcessBlockAudioProcessorEditor::ProcessBlockAudioProcessorEditor (CrannBethadh
 
             if (eventName == "setParameterValue") {
                 jassert(args.size() > 1);
-                std::cout << "setParameterValue: " << args[1].getString() << std::endl;
-                return handleSetParameterValueEvent(args[1]);
+                std::cout << "setParameterValue: " << args[1]["paramId"].getString() << std::endl;
+                
+                auto parameterID = args[1]["paramId"].getString();
+                auto value = numberFromChocValue(args[1]["value"]);
+                
+                for (auto& p : processorRef.getParameters()) {
+                   if (auto* pf = dynamic_cast<juce::AudioParameterFloat*>(p)) {
+                        if (pf->paramID.toStdString() == parameterID) {
+                            pf->setValueNotifyingHost(value);
+                            break;
+                        }
+                    }
+                }
+                
+                // return handleSetParameterValueEvent(args[1]);
             }
         }
 
@@ -139,11 +152,13 @@ choc::value::Value ProcessBlockAudioProcessorEditor::handleSetParameterValueEven
     // When setting a parameter value, we simply tell the host. This will in turn fire
     // a parameterValueChanged event, which will catch and propagate through dispatching
     // a state change event
+    std::cout << "handleSetParameterValueEvent" << std::endl;
+
     if (e.isObject() && e.hasObjectMember("paramId") && e.hasObjectMember("value")) {
         auto const& paramId = e["paramId"].getString();
         double const v = numberFromChocValue(e["value"]);
 
-        std::cout << "paramId: " << paramId << " value: " << v << std::endl;
+        std::cout << "Inside: paramId: " << paramId << " value: " << v << std::endl;
 
         for (auto& p : getAudioProcessor()->getParameters()) {
             if (auto* pf = dynamic_cast<juce::AudioParameterFloat*>(p)) {

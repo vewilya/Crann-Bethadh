@@ -16,7 +16,7 @@ constexpr auto CONVOLUTION_PARAMETER = "convolution";
 /**
 */
 class CrannBethadhAudioProcessor  : public juce::AudioProcessor, 
-                                          juce::AudioProcessorValueTreeState::Listener
+                                          public juce::AudioProcessorParameter::Listener
 {
 public:
     //==============================================================================
@@ -59,12 +59,11 @@ public:
     
     void process(juce::dsp::ProcessContextReplacing<float> context);
     void updateParameters();
-    
-    // Value Tree =======================================================================
-    juce::AudioProcessorValueTreeState& getTreeState() {
-      return treeState;
-    }   
 
+    /** Implement the AudioProcessorParameter::Listener interface. */
+    void parameterValueChanged (int parameterIndex, float newValue) override;
+    void parameterGestureChanged (int parameterIndex, bool gestureIsStarting) override;
+    
     ub::Convolver& getConvolver() {
       return convolver;
     }
@@ -72,18 +71,19 @@ public:
     ub::dsp::Saturator& getSaturator() {
       return saturationModule;
     }
+
+    ub::PluginParameters& getPluginParams() {
+      return pluginParams;
+    }
+
 private:
-    
-    juce::AudioProcessorValueTreeState treeState;
+    //==============================================================================
     juce::dsp::ProcessSpec spec;
     juce::AudioBuffer<float> wetBuffer;
       
     ub::PluginParameters pluginParams;
 
     static constexpr float piDivisor = 2.0f / juce::MathConstants<float>::pi;
-
-    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
-    void parameterChanged (const juce::String& parameterID, float newValue) override;
     
     juce::dsp::Oversampling<float> oversampling;
 

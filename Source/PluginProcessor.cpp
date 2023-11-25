@@ -11,60 +11,53 @@ CrannBethadhAudioProcessor::CrannBethadhAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ),  treeState(*this, nullptr, "PARAMETERS",  createParameterLayout()),
-oversampling (2, 3, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR)
+                       ), oversampling (2, 3, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR)
 #endif
 {
-    treeState.addParameterListener(MIX_PARAMETER, this);
-    treeState.addParameterListener(SATTYPE_PARAMETER, this);
-    treeState.addParameterListener(DRIVE_PARAMETER, this);
-    treeState.addParameterListener(FEEDBACK_PARAMETER, this);
-    treeState.addParameterListener(CONVOLUTION_PARAMETER, this);
+
+        auto* pDrive = new juce::AudioParameterFloat(
+        juce::ParameterID(DRIVE_PARAMETER, 1),
+        DRIVE_PARAMETER,
+        {static_cast<float>(0.0f), static_cast<float>(1.0f)},
+        0.5f
+    );
+
+    pDrive->addListener(this);
+    addParameter(pDrive);
 }
 
 CrannBethadhAudioProcessor::~CrannBethadhAudioProcessor()
 {
-    treeState.removeParameterListener(MIX_PARAMETER, this);
-    treeState.removeParameterListener(SATTYPE_PARAMETER, this);
-    treeState.removeParameterListener(DRIVE_PARAMETER, this);
-    treeState.removeParameterListener(FEEDBACK_PARAMETER, this);
-    treeState.removeParameterListener(CONVOLUTION_PARAMETER, this);
+    
 }
 
-juce::AudioProcessorValueTreeState::ParameterLayout CrannBethadhAudioProcessor::createParameterLayout()
-{
-    std::vector <std::unique_ptr<juce::RangedAudioParameter>> params;
-    
-    auto pMix = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { MIX_PARAMETER, 1 }, MIX_PARAMETER,  0.0f, 1.0f, 0.0f );
-    auto pSatType = std::make_unique<juce::AudioParameterChoice> (juce::ParameterID { SATTYPE_PARAMETER, 1 }, SATTYPE_PARAMETER, SaturatorBoutique::getSatChoices(), 0);
-    auto pDrive = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { DRIVE_PARAMETER, 1 }, DRIVE_PARAMETER,  0.0f, 1.0f, 0.0f );
-    auto pFeedback = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { FEEDBACK_PARAMETER, 1 }, FEEDBACK_PARAMETER,  0.0f, 1.0f, 0.0f );
-    auto pConvo = std::make_unique<juce::AudioParameterFloat> (juce::ParameterID { CONVOLUTION_PARAMETER, 1 }, CONVOLUTION_PARAMETER,  0.0f, 1.0f, 0.0f );
-    
-    params.push_back(std::move(pMix));
-    params.push_back(std::move(pSatType));
-    params.push_back(std::move(pDrive));
-    params.push_back(std::move(pFeedback));
-    params.push_back(std::move(pConvo));
-    return { params.begin(), params.end() };
-}
 
-void CrannBethadhAudioProcessor::parameterChanged(const juce::String &parameterID, float newValue)
+void CrannBethadhAudioProcessor::parameterValueChanged (int parameterIndex, float newValue)
 {
-    
-    if (parameterID == MIX_PARAMETER)
-    {
-        pluginParams.mix = newValue;
-    }
-    else if (parameterID == DRIVE_PARAMETER)
-    {
+    std::cout << "Surprise, surprise: " << parameterIndex << ", " << newValue << std::endl;
+    if (parameterIndex == 0) {
         pluginParams.drive = newValue;
     }
-    else if (parameterID == CONVOLUTION_PARAMETER)
-    {
-        pluginParams.convolution = newValue;
-    }
+    // else if (parameterIndex == 1) {
+    //     pluginParams.mix = newValue;
+    // }
+    // else if (parameterIndex == 2) {
+    //     pluginParams.convolution = newValue;
+    // }
+    // else if (parameterIndex == 3) {
+    //     pluginParams.saturationType = static_cast<SaturationType>(newValue);
+    // }
+    // else if (parameterIndex == 4) {
+    //     pluginParams.feedback = newValue;
+    // }
+    // else {
+    //     jassertfalse;
+    // }
+}
 
+void CrannBethadhAudioProcessor::parameterGestureChanged (int, bool)
+{
+    // Not implemented
 }
 
 //==============================================================================
@@ -234,7 +227,7 @@ void CrannBethadhAudioProcessor::getStateInformation (juce::MemoryBlock& destDat
 {
     //Save Param
     juce::MemoryOutputStream stream(destData, false);
-    treeState.state.writeToStream (stream);
+
 }
 
 void CrannBethadhAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
@@ -243,7 +236,7 @@ void CrannBethadhAudioProcessor::setStateInformation (const void* data, int size
     auto tree = juce::ValueTree::readFromData(data, size_t(sizeInBytes));
     if (tree.isValid())
     {
-        treeState.state = tree;
+        // TODO: Set parameters
 
     }
 }
