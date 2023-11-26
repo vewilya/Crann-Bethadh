@@ -1,0 +1,37 @@
+{
+  "parameters": [
+    {
+      "paramId": "bypass",
+      "name": "Bypass",
+      "type": "bool",
+      "min": 0.0,
+      "max": 1.0,
+      "defaultValue": 0.0
+    },
+    {
+      "paramId": "drive",
+      "name": "Drive",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "defaultValue": 0.3
+    },
+    {
+      "paramId": "convolution",
+      "name": "Convolution",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "defaultValue": 0.3
+    },
+    {
+      "paramId": "feedback",
+      "name": "Feedback",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "defaultValue": 0.3
+    }
+    
+  ]
+}

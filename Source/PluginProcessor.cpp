@@ -1,5 +1,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "DataStruct.h"
+
 
 //==============================================================================
 CrannBethadhAudioProcessor::CrannBethadhAudioProcessor()
@@ -14,27 +16,56 @@ CrannBethadhAudioProcessor::CrannBethadhAudioProcessor()
                        ), oversampling (2, 3, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR)
 #endif
 {
+    juce::String saturationTypeChoices[2] = {"Boutique", "Standard"};
 
-        auto* pDrive = new juce::AudioParameterFloat(
-        juce::ParameterID(DRIVE_PARAMETER, 1),
-        DRIVE_PARAMETER,
-        {static_cast<float>(0.0f), static_cast<float>(1.0f)},
-        0.5f
-    );
+    // Add Parameters
+    auto driveParam = new juce::AudioParameterFloat(juce::ParameterID(DRIVE_PARAMETER, 1), DRIVE_PARAMETER, 0.0f, 1.0f, 0.5f);
+    auto convolutionParam = new juce::AudioParameterFloat(juce::ParameterID("convolution", 1), "Convolution", 0.0f, 1.0f, 0.5f);
+    auto mixParam = new juce::AudioParameterFloat(juce::ParameterID(MIX_PARAMETER, 1), MIX_PARAMETER, 0.0f, 1.0f, 0.5f);
+    // auto* saturationTypeParam = new juce::AudioParameterChoice(juce::ParameterID(SATTYPE_PARAMETER, 1), SATTYPE_PARAMETER, saturationTypeChoices, 0);
+    auto feedbackParam = new juce::AudioParameterFloat(juce::ParameterID(FEEDBACK_PARAMETER, 1), FEEDBACK_PARAMETER, 0.0f, 1.0f, 0.5f);
 
-    pDrive->addListener(this);
-    addParameter(pDrive);
+    addParameter(driveParam);
+    addParameter(convolutionParam);
+    addParameter(mixParam);
+    // addParameter(saturationTypeParam);
+    addParameter(feedbackParam);
+
+    // addParameter(saturationTypeParam = new juce::AudioParameterChoice("saturationType", "Saturation Type", saturationTypeChoices, 0));
+    // addParameter(feedbackParam = new juce::AudioParameterFloat("feedback", "Feedback", 0.0f, 1.0f, 0.5f));
+    
+    // Add Listeners
+    for (auto& params : getParameters())
+    {
+        params->addListener(this);
+    }
+    
+    // Initialize Parameters
+    pluginParams.drive = driveParam->get();
+    pluginParams.mix = mixParam->get();
+    pluginParams.convolution = convolutionParam->get();
+    // pluginParams.saturationType = static_cast<SaturationType>(saturationTypeParam->getIndex());
+    pluginParams.feedback = feedbackParam->get();
+    
+    
+    // Initialize Convolver
+    // convolver.loadImpulseResponse(juce::File("/Users/alexander/Documents/Projects/CrannBethadh/Source/ImpulseResponses/ImpulseResponse.wav"));
+
 }
 
 CrannBethadhAudioProcessor::~CrannBethadhAudioProcessor()
 {
-    
+    for (auto& params : getParameters())
+    {
+        params->removeListener(this);
+    }
 }
 
 
 void CrannBethadhAudioProcessor::parameterValueChanged (int parameterIndex, float newValue)
 {
     std::cout << "Surprise, surprise: " << parameterIndex << ", " << newValue << std::endl;
+    
     if (parameterIndex == 0) {
         pluginParams.drive = newValue;
     }
@@ -218,7 +249,7 @@ bool CrannBethadhAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* CrannBethadhAudioProcessor::createEditor()
 {
-    return new ProcessBlockAudioProcessorEditor (*this);
+    return new CrannBethadhAudioProcessorEditor (*this);
 //    return new juce::GenericAudioProcessorEditor (*this);
 }
 

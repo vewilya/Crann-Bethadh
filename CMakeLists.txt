@@ -98,6 +98,7 @@ juce_add_binary_data(Images SOURCES
     Resources/Mask.png
     Resources/title.png
     ui/dist/Index.html
+    ui/dist/manifest.json
     # ui/dist/assets/index-RGnjRSa1.js
     # ui/dist/assets/index-JwSxX1cZ.css
 )

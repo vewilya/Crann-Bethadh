@@ -8,11 +8,11 @@
 //==============================================================================
 /**
 */
-class ProcessBlockAudioProcessorEditor  : public juce::AudioProcessorEditor
+class CrannBethadhAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
-    ProcessBlockAudioProcessorEditor (CrannBethadhAudioProcessor&);
-    ~ProcessBlockAudioProcessorEditor() override;
+    CrannBethadhAudioProcessorEditor (CrannBethadhAudioProcessor&);
+    ~CrannBethadhAudioProcessorEditor() override;
 
     //==============================================================================
     void paint (juce::Graphics&) override;
@@ -39,5 +39,5 @@ private:
     
     void colourMenuChanged();
      
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProcessBlockAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrannBethadhAudioProcessorEditor)
 };

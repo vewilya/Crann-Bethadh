@@ -5,13 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "copy": "cpy manifest.json dist/",
+    "postbuild": "npm run copy",
+    "build": "vite build ",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "cpy-cli": "^4.2.0",
     "svelte": "^4.2.3",
     "vite": "^5.0.0",
     "vite-plugin-singlefile": "^0.13.5"
+  },
+  "dependencies": {
+    "canvas-sketch-util": "^1.10.0"
   }
 }

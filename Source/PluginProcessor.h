@@ -16,7 +16,7 @@ constexpr auto CONVOLUTION_PARAMETER = "convolution";
 /**
 */
 class CrannBethadhAudioProcessor  : public juce::AudioProcessor, 
-                                          public juce::AudioProcessorParameter::Listener
+                                    public juce::AudioProcessorParameter::Listener
 {
 public:
     //==============================================================================

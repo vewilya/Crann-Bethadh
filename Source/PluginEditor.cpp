@@ -11,7 +11,7 @@ double numberFromChocValue(const choc::value::ValueView& v) {
 }
 
 //==============================================================================
-ProcessBlockAudioProcessorEditor::ProcessBlockAudioProcessorEditor (CrannBethadhAudioProcessor& p)
+CrannBethadhAudioProcessorEditor::CrannBethadhAudioProcessorEditor (CrannBethadhAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p), processorRef (p)
 {
     // UI Size and Resizing
@@ -69,28 +69,18 @@ ProcessBlockAudioProcessorEditor::ProcessBlockAudioProcessorEditor (CrannBethadh
             // When the webView loads it should send a message telling us that it has established
             // its message-passing hooks and is ready for a state dispatch
             if (eventName == "ready") {
-                if (auto* ptr = dynamic_cast<CrannBethadhAudioProcessor*>(getAudioProcessor())) {
-                    // ptr->dispatchStateChange();
-                }
+                // if (auto* ptr = dynamic_cast<EffectsPluginProcessor*>(getAudioProcessor())) {
+                //     ptr->dispatchStateChange();
+                // }
+                // Not implemented yet
             }
 
             if (eventName == "setParameterValue") {
                 jassert(args.size() > 1);
-                std::cout << "setParameterValue: " << args[1]["paramId"].getString() << std::endl;
-                
-                auto parameterID = args[1]["paramId"].getString();
-                auto value = numberFromChocValue(args[1]["value"]);
-                
-                for (auto& p : processorRef.getParameters()) {
-                   if (auto* pf = dynamic_cast<juce::AudioParameterFloat*>(p)) {
-                        if (pf->paramID.toStdString() == parameterID) {
-                            pf->setValueNotifyingHost(value);
-                            break;
-                        }
-                    }
-                }
-                
-                // return handleSetParameterValueEvent(args[1]);
+
+                std::cout << "parameterId " << args[1]["paramId"].getString() << std::endl;
+                std::cout << "setParameterValue: " << numberFromChocValue(args[1]["value"]) << std::endl;
+                return handleSetParameterValueEvent(args[1]);
             }
         }
 
@@ -98,23 +88,23 @@ ProcessBlockAudioProcessorEditor::ProcessBlockAudioProcessorEditor (CrannBethadh
     });
 }
 
-ProcessBlockAudioProcessorEditor::~ProcessBlockAudioProcessorEditor()
+CrannBethadhAudioProcessorEditor::~CrannBethadhAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void ProcessBlockAudioProcessorEditor::paint (juce::Graphics& g)
+void CrannBethadhAudioProcessorEditor::paint (juce::Graphics& g)
 {
     
 }
 
-void ProcessBlockAudioProcessorEditor::resized()
+void CrannBethadhAudioProcessorEditor::resized()
 {
     viewContainer.setBounds(getLocalBounds());
    
 }
 
-void  ProcessBlockAudioProcessorEditor::colourMenuChanged() {
+void  CrannBethadhAudioProcessorEditor::colourMenuChanged() {
     {
         juce::File result;
      
@@ -148,18 +138,20 @@ void  ProcessBlockAudioProcessorEditor::colourMenuChanged() {
 }
 
 //==============================================================================
-choc::value::Value ProcessBlockAudioProcessorEditor::handleSetParameterValueEvent(const choc::value::ValueView& e) {
+//==============================================================================
+choc::value::Value CrannBethadhAudioProcessorEditor::handleSetParameterValueEvent(const choc::value::ValueView& e) {
     // When setting a parameter value, we simply tell the host. This will in turn fire
     // a parameterValueChanged event, which will catch and propagate through dispatching
     // a state change event
-    std::cout << "handleSetParameterValueEvent" << std::endl;
 
+    
     if (e.isObject() && e.hasObjectMember("paramId") && e.hasObjectMember("value")) {
+        
         auto const& paramId = e["paramId"].getString();
         double const v = numberFromChocValue(e["value"]);
 
-        std::cout << "Inside: paramId: " << paramId << " value: " << v << std::endl;
-
+        // std::cout << "paramId: " << paramId << ", value: " << v << std::endl;
+        
         for (auto& p : getAudioProcessor()->getParameters()) {
             if (auto* pf = dynamic_cast<juce::AudioParameterFloat*>(p)) {
                 if (pf->paramID.toStdString() == paramId) {
