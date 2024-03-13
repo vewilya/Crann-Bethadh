@@ -1,9 +1,10 @@
 <script>
   import NoiseBG from "./lib/NoiseBG.svelte";
-  import Nebula from "./lib/Nebula.svelte"
+  import Nebula from "./lib/Nebula.svelte";
   import Structures from "./lib/Structures.svelte";
   import SaturationSelect from "./lib/SaturationSelect.svelte";
   import { pluginParams } from "./store.js";
+  import { value } from "canvas-sketch-util/random";
 
   // print out current width and height
   let width = window.innerWidth;
@@ -19,9 +20,8 @@
 
   // Interop bindings
   function requestParamValueUpdate(paramId, value) {
-    // const v = parseFloat(value);
-    console.log(paramId, value.srcElement.value);
-    if (typeof globalThis.__postNativeMessage__ === 'function') {
+    console.log(paramId, value);
+    if (typeof globalThis.__postNativeMessage__ === "function") {
       globalThis.__postNativeMessage__("setParameterValue", {
         paramId,
         value,
@@ -33,10 +33,9 @@
 <svelte:window on:resize={() => onResize()} />
 
 <main>
-
   <!-- <NoiseBG /> -->
   <Structures />
-  <Nebula /> 
+  <Nebula />
   <h1>Crann Bethadh</h1>
   <SaturationSelect />
   <!-- <p class="subtitle">
@@ -45,37 +44,68 @@
 
   <div class="sliders">
     <h3>
-      {"Drive: "+($pluginParams.drive * 100).toFixed(0)+'%'}
-    </h3>                
+      {"Drive: " + ($pluginParams.drive * 100).toFixed(0) + "%"}
+    </h3>
     <div class="range">
       <div class="slidecontainer">
-        <input type="range" min=0 max=1 step=0.00001 bind:value={$pluginParams.drive} class="slider" id="myRange" on:input={(e) => {requestParamValueUpdate("drive", e)}}>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          bind:value={$pluginParams.drive}
+          class="slider"
+          id="myRange"
+          on:input={(e) => {
+            requestParamValueUpdate("drive", parseFloat(e.srcElement.value));
+          }}
+        />
       </div>
     </div>
-  
+
     <h3>
-      {"Convolution: "+($pluginParams.convolution * 100).toFixed(0)+'%'}
-    </h3>                
+      {"Convolution: " + ($pluginParams.convolution * 100).toFixed(0) + "%"}
+    </h3>
     <div class="range">
       <div class="slidecontainer">
-        <input type="range" min=0 max=1 step=0.00001 bind:value={$pluginParams.convolution} class="slider" id="myRange" on:input={(e) => {requestParamValueUpdate("convolution", e)}}>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          bind:value={$pluginParams.convolution}
+          class="slider"
+          id="myRange"
+          on:input={(e) => {
+            requestParamValueUpdate(
+              "convolution",
+              parseFloat(e.srcElement.value),
+            );
+          }}
+        />
       </div>
     </div>
-  
+
     <h3>
-      {"Feedback: "+($pluginParams.feedback * 100).toFixed(0)+'%'}
-    </h3>                
+      {"Mix: " + ($pluginParams.feedback * 100).toFixed(0) + "%"}
+    </h3>
     <div class="range">
       <div class="slidecontainer">
-        <input type="range" min=0 max=1 step=0.00001 bind:value={$pluginParams.feedback} class="slider" id="myRange" on:input={(e) => {requestParamValueUpdate("feedback", e)}}>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          bind:value={$pluginParams.feedback}
+          class="slider"
+          id="myRange"
+          on:input={(e) => {
+            requestParamValueUpdate("mix", parseFloat(e.srcElement.value));
+          }}
+        />
       </div>
     </div>
   </div>
-
-      
-         
-
-
 
   <!-- <div class="slidecontainer">
     <h3>drive</h3>
@@ -84,15 +114,14 @@
 </main>
 
 <style>
-
-  @import url('https://fonts.googleapis.com/css2?family=Style+Script&display=swap');
+  @import url("https://fonts.googleapis.com/css2?family=Style+Script&display=swap");
 
   h1 {
     margin-left: auto;
     margin-right: auto;
     color: white;
     text-align: center;
-    font-family: 'Style Script', cursive;
+    font-family: "Style Script", cursive;
     font-size: 5em;
     z-index: 1;
   }
@@ -100,13 +129,13 @@
   h3 {
     color: white;
     text-align: center;
-    font-family: 'Style Script', cursive;
+    font-family: "Style Script", cursive;
     font-size: 2em;
   }
 
   ul {
     text-align: center;
-    font-family: 'Style Script', cursive;
+    font-family: "Style Script", cursive;
     font-size: 2em;
   }
 
@@ -122,30 +151,25 @@
 
   /* The slider itself */
   .slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
+    -webkit-appearance: none; /* Override default CSS styles */
     appearance: none;
     width: 100%; /* Full-width */
     height: 25px; /* Specified height */
     background: #d3d3d3; /* Grey background */
     outline: none; /* Remove outline */
     opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-    transition: opacity .2s;
+    -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+    transition: opacity 0.2s;
     border-radius: 25px; /* Rounded corners */
   }
 
-  /* Mouse-over effects */
-  .slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
-  }
-
-  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */ 
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
   .slider::-webkit-slider-thumb {
     -webkit-appearance: none; /* Override default look */
     appearance: none;
     width: 25px; /* Set a specific slider handle width */
     height: 25px; /* Slider handle height */
-    background: #04AA6D; /* Green background */
+    background: #04aa6d; /* Green background */
     cursor: pointer; /* Cursor on hover */
     border-radius: 25px; /* Rounded corners */
   }
@@ -153,7 +177,7 @@
   .slider::-moz-range-thumb {
     width: 25px; /* Set a specific slider handle width */
     height: 25px; /* Slider handle height */
-    background: #04AA6D; /* Green background */
+    background: #04aa6d; /* Green background */
     cursor: pointer; /* Cursor on hover */
   }
 
@@ -164,5 +188,4 @@
   .sliders {
     margin-top: 10vh;
   }
-
 </style>
