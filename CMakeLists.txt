@@ -37,6 +37,13 @@ CPMAddPackage(
 )
 
 CPMAddPackage(
+    NAME choc
+    GITHUB_REPOSITORY nick-thompson/choc
+    GIT_TAG nick/edits
+    SOURCE_DIR ${LIB_DIR}/choc
+)
+
+CPMAddPackage(
     NAME GOOGLETEST
     GITHUB_REPOSITORY google/googletest
     VERSION 1.14.0
