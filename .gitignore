@@ -3,6 +3,7 @@
 # Resources/
 Builds/
 build/
+build_release/
 libs/
 JuceLibraryCode/
 ui/node_modules/
